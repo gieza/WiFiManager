@@ -530,7 +530,7 @@ class WiFiManager
     String        getIpForm(String id, String title, String value);
     String        getScanItemOut();
     String        getStaticOut();
-    String        getHTTPHead(String title);
+    String        getHTTPHead(String title, bool includeHomeButton = true);
     String        getMenuOut();
     //helpers
     boolean       isIp(String str);

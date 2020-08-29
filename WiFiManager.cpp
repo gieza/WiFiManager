@@ -942,7 +942,7 @@ void WiFiManager::startWPS() {
 }
 #endif
 
-String WiFiManager::getHTTPHead(String title){
+String WiFiManager::getHTTPHead(String title, bool includeHomeButton){
   String page;
   page += FPSTR(HTTP_HEAD_START);
   page.replace(FPSTR(T_v), title);
@@ -958,6 +958,9 @@ String WiFiManager::getHTTPHead(String title){
   else {
     page += FPSTR(HTTP_HEAD_END);
   } 
+  if (includeHomeButton) {
+    page += FPSTR(GO_HOME_BUTTON);
+  }
 
   return page;
 }
@@ -976,7 +979,7 @@ void WiFiManager::handleRoot() {
   DEBUG_WM(DEBUG_VERBOSE,F("<- HTTP Root"));
   if (captivePortal()) return; // If captive portal redirect instead of displaying the page
   handleRequest();
-  String page = getHTTPHead(FPSTR(S_options)); // @token options @todo replace options with title
+  String page = getHTTPHead(FPSTR(S_options), false); // @token options @todo replace options with title
   String str  = FPSTR(HTTP_ROOT_MAIN);
   str.replace(FPSTR(T_v),configPortalActive ? _apName : WiFi.localIP().toString()); // use ip if ap is not active for heading
   page += str;
@@ -1763,7 +1766,7 @@ String WiFiManager::getInfoData(String id){
 void WiFiManager::handleExit() {
   DEBUG_WM(DEBUG_VERBOSE,F("<- HTTP Exit"));
   handleRequest();
-  String page = getHTTPHead(FPSTR(S_titleexit)); // @token titleexit
+  String page = getHTTPHead(FPSTR(S_titleexit), false); // @token titleexit
   page += FPSTR(S_exiting); // @token exiting
   server->sendHeader(FPSTR(HTTP_HEAD_CL), String(page.length()));
   server->send(200, FPSTR(HTTP_HEAD_CT), page);
